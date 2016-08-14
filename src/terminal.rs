@@ -38,6 +38,7 @@ pub struct Terminal {
     pub columns: u32,
     pub rows: u32,
     pub quit: bool,
+    pub keys_down: Vec<String>,
 }
 
 impl Terminal {
@@ -93,6 +94,7 @@ impl Terminal {
             font: font,
             event_pump: event,
             quit: false,
+            keys_down: vec![],
         }
     }
 
@@ -136,9 +138,14 @@ impl Terminal {
 
     pub fn draw(&mut self) {
 
+        self.keys_down = vec![];
+
         for event in self.event_pump.poll_iter() {
             match event {
                 Event::Quit { .. } => self.quit = true,
+                Event::KeyDown { keycode: kc, .. } => {
+                    self.keys_down.push(kc.unwrap().to_string());
+                }
                 _ => {}
             }
         }
