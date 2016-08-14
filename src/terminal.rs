@@ -3,6 +3,7 @@ extern crate sdl2_image;
 
 use std::path::Path;
 use sdl2::EventPump;
+use sdl2::event::Event;
 use sdl2::Sdl;
 use sdl2::pixels;
 use sdl2::rect::Rect;
@@ -36,6 +37,7 @@ pub struct Terminal {
     pub event_pump: EventPump,
     pub columns: u32,
     pub rows: u32,
+    pub quit: bool,
 }
 
 impl Terminal {
@@ -90,6 +92,7 @@ impl Terminal {
             grid: grid,
             font: font,
             event_pump: event,
+            quit: false,
         }
     }
 
@@ -132,6 +135,14 @@ impl Terminal {
     }
 
     pub fn draw(&mut self) {
+
+        for event in self.event_pump.poll_iter() {
+            match event {
+                Event::Quit { .. } => self.quit = true,
+                _ => {}
+            }
+        }
+
         self.renderer.clear();
 
         let total_cells = self.columns * self.rows;

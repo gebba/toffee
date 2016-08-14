@@ -2,7 +2,6 @@ extern crate sdl2;
 extern crate toffee;
 
 use std::time;
-use sdl2::event::Event;
 use toffee::terminal::{Terminal, FontDefinition};
 use toffee::colors;
 
@@ -23,11 +22,8 @@ pub fn main() {
     let mut fps = 0;
 
     'mainloop: loop {
-        for event in term.event_pump.poll_iter() {
-            match event {
-                Event::Quit { .. } => break 'mainloop,
-                _ => {}
-            }
+        if term.quit {
+            break 'mainloop;
         }
         term.print(0,
                    0,
