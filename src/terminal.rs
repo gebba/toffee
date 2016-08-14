@@ -54,7 +54,7 @@ impl Terminal {
             .unwrap();
         let renderer = window.renderer()
             .accelerated()
-            .present_vsync()
+            // .present_vsync()
             .build()
             .unwrap();
 
