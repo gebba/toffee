@@ -1,4 +1,7 @@
 
+use sdl2;
+use sdl2_image;
+use sdl2_image::INIT_PNG;
 use colors::Color;
 
 pub struct Cell {
@@ -11,10 +14,15 @@ pub struct Terminal {
     pub grid: Vec<Cell>,
     pub columns: u32,
     pub rows: u32,
+    pub sdl_context: sdl2::Sdl,
 }
 
 impl Terminal {
     pub fn new(columns: u32, rows: u32) -> Self {
+
+        let sdl_context = sdl2::init().unwrap();
+        let _image_context = sdl2_image::init(INIT_PNG).unwrap();
+
         let mut grid = vec![];
 
         let total_cells = columns * rows;
@@ -40,6 +48,7 @@ impl Terminal {
             grid: grid,
             columns: columns,
             rows: rows,
+            sdl_context: sdl_context,
         }
     }
 

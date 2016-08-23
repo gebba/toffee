@@ -2,9 +2,12 @@ extern crate sdl2;
 extern crate toffee;
 
 use std::time;
+use sdl2::keyboard::Keycode;
+use sdl2::event::Event;
 use toffee::font::FontDefinition;
 use toffee::terminal::Terminal;
 use toffee::renderer::Renderer;
+use toffee::event::Events;
 use toffee::colors;
 
 pub fn main() {
@@ -16,7 +19,8 @@ pub fn main() {
         transparent: false,
     };
     let mut term = Terminal::new(50, 20);
-    let mut term_renderer = Renderer::new(font, 50, 20);
+    let mut term_renderer = Renderer::new(&term, font);
+    let mut event_handler = Events::new(&term);
 
     term.print_center(5, "It seems to be working!", colors::WHITE, colors::BLUE);
 
@@ -24,22 +28,24 @@ pub fn main() {
     let mut frames = 0;
     let mut fps = 0;
 
-    let mut running_time = 10;
+    let mut x = 0;
+    let mut y = 0;
 
     'mainloop: loop {
-        if running_time <= 0 {
-            break 'mainloop;
+
+        for event in event_handler.event_pump.poll_iter() {
+            match event {
+                Event::Quit { .. } |
+                Event::KeyDown { keycode: Some(Keycode::Escape), .. } => break 'mainloop,
+                _ => {}
+            }
         }
+
         term.print(0,
                    0,
                    format!("FPS: {}", fps).as_str(),
                    colors::YELLOW,
                    colors::BLACK);
-
-        term.print_center(6,
-                          format!("   Closing in {} seconds.   ", running_time).as_str(),
-                          colors::RED,
-                          colors::BLACK);
 
         term_renderer.draw(&term);
         frames += 1;
@@ -48,7 +54,6 @@ pub fn main() {
         let seconds_since_last =
             time::SystemTime::now().duration_since(last_update).unwrap().as_secs();
 
-        running_time -= seconds_since_last;
         if seconds_since_last >= 1 {
             fps = frames;
             frames = 0;

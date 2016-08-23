@@ -1,9 +1,8 @@
 
 use sdl2;
-use sdl2_image;
 use sdl2::pixels;
 use sdl2::rect::Rect;
-use sdl2_image::{LoadTexture, INIT_PNG};
+use sdl2_image::LoadTexture;
 use std::path::Path;
 use terminal::Terminal;
 use font::FontDefinition;
@@ -16,14 +15,12 @@ pub struct Renderer<'a> {
 }
 
 impl<'a> Renderer<'a> {
-    pub fn new(font: FontDefinition, columns: u32, rows: u32) -> Self {
+    pub fn new(terminal: &Terminal, font: FontDefinition) -> Self {
 
-        let sdl_context = sdl2::init().unwrap();
-        let _image_context = sdl2_image::init(INIT_PNG).unwrap();
-        let video_subsystem = sdl_context.video().unwrap();
+        let video_subsystem = terminal.sdl_context.video().unwrap();
         let window = video_subsystem.window("davokar-rl",
-                    (columns * font.width) as u32,
-                    (rows * font.height) as u32)
+                    (terminal.columns * font.width) as u32,
+                    (terminal.rows * font.height) as u32)
             .position_centered()
             .opengl()
             .build()
