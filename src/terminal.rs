@@ -52,7 +52,14 @@ impl Terminal {
         }
     }
 
-    pub fn set_cell(&mut self, x: i32, y: i32, c: char, fg: Color, bg: Color) {
+    pub fn set_cell(&mut self, x: i32, y: i32, cell: Cell) {
+        let index = self.columns as i32 * y + x;
+        if x >= 0 && y >= 0 && x < self.columns as i32 && y < self.rows as i32 {
+            self.grid[index as usize] = cell;
+        }
+    }
+
+    pub fn set(&mut self, x: i32, y: i32, c: char, fg: Color, bg: Color) {
         let index = self.columns as i32 * y + x;
         if x >= 0 && y >= 0 && x < self.columns as i32 && y < self.rows as i32 {
             self.grid[index as usize] = Cell {
@@ -67,7 +74,7 @@ impl Terminal {
         let mut string_chars = text.chars();
         for i in 0..text.len() {
             let c = string_chars.next().unwrap();
-            self.set_cell(x + i as i32, y, c, fg, bg);
+            self.set(x + i as i32, y, c, fg, bg);
         }
     }
 
