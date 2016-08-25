@@ -60,14 +60,12 @@ impl Terminal {
     }
 
     pub fn set(&mut self, x: i32, y: i32, c: char, fg: Color, bg: Color) {
-        let index = self.columns as i32 * y + x;
-        if x >= 0 && y >= 0 && x < self.columns as i32 && y < self.rows as i32 {
-            self.grid[index as usize] = Cell {
-                glyph: c,
-                fg: fg,
-                bg: bg,
-            }
-        }
+        let cell = Cell {
+            glyph: c,
+            fg: fg,
+            bg: bg,
+        };
+        self.set_cell(x, y, cell);
     }
 
     pub fn print(&mut self, x: i32, y: i32, text: &str, fg: Color, bg: Color) {
