@@ -4,6 +4,7 @@ use sdl2_image;
 use sdl2_image::INIT_PNG;
 use colors::Color;
 
+#[derive(Copy, Clone)]
 pub struct Cell {
     pub glyph: char,
     pub fg: Color,
