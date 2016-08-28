@@ -3,12 +3,31 @@ use sdl2;
 use sdl2_image;
 use sdl2_image::INIT_PNG;
 use colors::Color;
+use std::cmp::Eq;
 
 #[derive(Copy, Clone)]
 pub struct Cell {
     pub glyph: char,
     pub fg: Color,
     pub bg: Color,
+    pub dirty: bool,
+}
+
+impl Cell {
+    pub fn new(glyph: char, fg: Color, bg: Color) -> Self {
+        Cell {
+            glyph: glyph,
+            fg: fg,
+            bg: bg,
+            dirty: true,
+        }
+    }
+}
+
+impl PartialEq for Cell {
+    fn eq(&self, other: &Cell) -> bool {
+        (self.glyph == other.glyph && self.fg == other.fg && self.bg == other.bg)
+    }
 }
 
 pub struct Terminal {
@@ -42,6 +61,7 @@ impl Terminal {
                     b: 0,
                     a: 255,
                 },
+                dirty: true,
             });
         }
 
@@ -56,7 +76,10 @@ impl Terminal {
     pub fn set_cell(&mut self, x: i32, y: i32, cell: Cell) {
         let index = self.columns as i32 * y + x;
         if x >= 0 && y >= 0 && x < self.columns as i32 && y < self.rows as i32 {
-            self.grid[index as usize] = cell;
+            let current_cell = self.grid[index as usize];
+            if current_cell != cell {
+                self.grid[index as usize] = cell;
+            }
         }
     }
 
@@ -65,6 +88,7 @@ impl Terminal {
             glyph: c,
             fg: fg,
             bg: bg,
+            dirty: true,
         };
         self.set_cell(x, y, cell);
     }

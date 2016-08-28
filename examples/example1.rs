@@ -47,7 +47,7 @@ pub fn main() {
                    colors::YELLOW,
                    colors::BLACK);
 
-        term_renderer.draw(&term);
+        term_renderer.draw(&mut term);
         frames += 1;
 
         let now = time::SystemTime::now();

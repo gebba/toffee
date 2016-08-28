@@ -1,4 +1,6 @@
 
+use std::cmp::Eq;
+
 #[derive(Copy, Clone)]
 pub struct Color {
     pub r: u8,
@@ -24,6 +26,12 @@ impl Color {
             b: b,
             a: a,
         }
+    }
+}
+
+impl PartialEq for Color {
+    fn eq(&self, other: &Color) -> bool {
+        (self.r == other.r && self.g == other.g && self.b == other.b && self.a == other.a)
     }
 }
 

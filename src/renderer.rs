@@ -52,33 +52,37 @@ impl<'a> Renderer<'a> {
 
     }
 
-    pub fn draw(&mut self, terminal: &Terminal) {
-        self.sdl_renderer.clear();
-
+    pub fn draw(&mut self, terminal: &mut Terminal) {
         let total_cells = terminal.columns * terminal.rows;
 
         for i in 0..total_cells {
-            let cell = &terminal.grid[i as usize];
+            let mut cell = &mut terminal.grid[i as usize];
 
-            self.sprite_sheet.texture.set_color_mod(cell.fg.r, cell.fg.g, cell.fg.b);
-            let sprite = self.sprite_sheet.get_sprite((cell.glyph as u8) as usize);
+            if cell.dirty {
+                self.sprite_sheet.texture.set_color_mod(cell.fg.r, cell.fg.g, cell.fg.b);
+                let sprite = self.sprite_sheet.get_sprite((cell.glyph as u8) as usize);
 
-            let x = i % terminal.columns;
-            let y = i / terminal.columns;
-            let px = x * self.font.width;
-            let py = y * self.font.height;
+                let x = i % terminal.columns;
+                let y = i / terminal.columns;
+                let px = x * self.font.width;
+                let py = y * self.font.height;
 
-            // draw the background for the cell
-            self.sdl_renderer
-                .set_draw_color(pixels::Color::RGBA(cell.bg.r, cell.bg.g, cell.bg.b, cell.bg.a));
-            let _t = self.sdl_renderer
-                .fill_rect(Rect::new(px as i32,
-                                     py as i32,
-                                     sprite.size.width(),
-                                     sprite.size.height()));
+                // draw the background for the cell
+                self.sdl_renderer
+                    .set_draw_color(pixels::Color::RGBA(cell.bg.r,
+                                                        cell.bg.g,
+                                                        cell.bg.b,
+                                                        cell.bg.a));
+                let _t = self.sdl_renderer
+                    .fill_rect(Rect::new(px as i32,
+                                         py as i32,
+                                         sprite.size.width(),
+                                         sprite.size.height()));
 
-            // draw the actual character
-            sprite.draw(px as i32, py as i32, &mut self.sdl_renderer);
+                // draw the actual character
+                sprite.draw(px as i32, py as i32, &mut self.sdl_renderer);
+                cell.dirty = false;
+            }
         }
         self.sdl_renderer.present();
     }
