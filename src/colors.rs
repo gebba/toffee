@@ -1,6 +1,4 @@
 
-use std::cmp::Eq;
-
 #[derive(Copy, Clone)]
 pub struct Color {
     pub r: u8,

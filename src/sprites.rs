@@ -1,6 +1,7 @@
 
 use sdl2::rect::Rect;
-use sdl2::render::{Texture, Renderer};
+use sdl2::video::Window;
+use sdl2::render::{Texture, Canvas};
 
 pub struct Sprite<'a> {
     rect: Rect,
@@ -9,26 +10,26 @@ pub struct Sprite<'a> {
 }
 
 impl<'a> Sprite<'a> {
-    pub fn draw(&self, x: i32, y: i32, renderer: &mut Renderer) {
+    pub fn draw(&self, x: i32, y: i32, canvas: &mut Canvas<Window>) {
         let pos_rect = Rect::new(x, y, self.size.width(), self.size.height());
-        renderer.copy(self.texture, Some(self.rect), Some(pos_rect));
+        canvas.copy(&self.texture, Some(self.rect), Some(pos_rect));
     }
 }
 
-pub struct SpriteSheet {
+pub struct SpriteSheet<'a> {
     pub sprite_width: u32,
     pub sprite_height: u32,
     padding: u32,
-    pub texture: Texture,
+    pub texture: &'a Texture,
 }
 
-impl SpriteSheet {
-    pub fn new(texture: Texture, sprite_width: u32, sprite_height: u32, padding: u32) -> Self {
+impl<'a> SpriteSheet<'a> {
+    pub fn new(texture: &Texture, sprite_width: u32, sprite_height: u32, padding: u32) -> Self {
         SpriteSheet {
-            sprite_width: sprite_width,
-            sprite_height: sprite_height,
-            padding: padding,
-            texture: texture,
+            sprite_width,
+            sprite_height,
+            padding,
+            texture: &texture,
         }
     }
 
@@ -48,7 +49,7 @@ impl SpriteSheet {
         Sprite {
             rect: Rect::new(px as i32, py as i32, self.sprite_width, self.sprite_height),
             size: Rect::new(0, 0, self.sprite_width, self.sprite_height),
-            texture: &self.texture,
+            texture: self.texture,
         }
     }
 }
