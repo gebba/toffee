@@ -10,14 +10,14 @@ use terminal::Terminal;
 use font::FontDefinition;
 use sprites::SpriteSheet;
 
-pub struct Renderer<'a> {
+pub struct Renderer {
     sdl_canvas: sdl2::render::Canvas<Window>,
-    sprite_sheet: SpriteSheet<'a>,
+    sprite_sheet: SpriteSheet,
     texture_creator: TextureCreator<WindowContext>,
     font: FontDefinition,
 }
 
-impl<'a> Renderer<'a> {
+impl Renderer {
     pub fn new(terminal: &Terminal, font: FontDefinition) -> Self {
 
         let video_subsystem = terminal.sdl_context.video().unwrap();
@@ -45,7 +45,7 @@ impl<'a> Renderer<'a> {
 
     fn load_font_sheet(font: &FontDefinition,
                        texture_creator: &TextureCreator<WindowContext>)
-                       -> Result<SpriteSheet<'a>, &'static str> {
+                       -> Result<SpriteSheet, &'static str> {
         let texture_result = texture_creator.load_texture(Path::new(font.image_path));
 
         match texture_result {

@@ -3,5 +3,7 @@ name = "toffee"
 version = "0.1.0"
 authors = ["Johan Sjölin <johan.sjolin@gmail.com>"]
 
-[dependencies]
-sdl2 = {default-features = false, features = ["image", "unsafe_textures"], git = "https://github.com/Rust-SDL2/rust-sdl2.git", branch = "master"}
+[dependencies.sdl2]
+version = "0.31"
+default-features = false
+features = ["image", "unsafe_textures"]

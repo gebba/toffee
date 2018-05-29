@@ -16,20 +16,20 @@ impl<'a> Sprite<'a> {
     }
 }
 
-pub struct SpriteSheet<'a> {
+pub struct SpriteSheet {
     pub sprite_width: u32,
     pub sprite_height: u32,
     padding: u32,
-    pub texture: &'a Texture,
+    pub texture: Texture,
 }
 
-impl<'a> SpriteSheet<'a> {
-    pub fn new(texture: &Texture, sprite_width: u32, sprite_height: u32, padding: u32) -> Self {
+impl SpriteSheet {
+    pub fn new(texture: Texture, sprite_width: u32, sprite_height: u32, padding: u32) -> Self {
         SpriteSheet {
             sprite_width,
             sprite_height,
             padding,
-            texture: &texture,
+            texture: texture,
         }
     }
 
@@ -49,7 +49,7 @@ impl<'a> SpriteSheet<'a> {
         Sprite {
             rect: Rect::new(px as i32, py as i32, self.sprite_width, self.sprite_height),
             size: Rect::new(0, 0, self.sprite_width, self.sprite_height),
-            texture: self.texture,
+            texture: &self.texture,
         }
     }
 }
