@@ -1,9 +1,7 @@
 
 use sdl2;
-use sdl2_image;
-use sdl2_image::INIT_PNG;
+use sdl2::image::INIT_PNG;
 use colors::Color;
-use std::cmp::Eq;
 
 #[derive(Copy, Clone)]
 pub struct Cell {
@@ -16,9 +14,9 @@ pub struct Cell {
 impl Cell {
     pub fn new(glyph: char, fg: Color, bg: Color) -> Self {
         Cell {
-            glyph: glyph,
-            fg: fg,
-            bg: bg,
+            glyph,
+            fg,
+            bg,
             dirty: true,
         }
     }
@@ -41,7 +39,7 @@ impl Terminal {
     pub fn new(columns: u32, rows: u32) -> Self {
 
         let sdl_context = sdl2::init().unwrap();
-        let _image_context = sdl2_image::init(INIT_PNG).unwrap();
+        let _image_context = sdl2::image::init(INIT_PNG).unwrap();
 
         let mut grid = vec![];
 
@@ -66,10 +64,10 @@ impl Terminal {
         }
 
         Terminal {
-            grid: grid,
-            columns: columns,
-            rows: rows,
-            sdl_context: sdl_context,
+            grid,
+            columns,
+            rows,
+            sdl_context,
         }
     }
 
@@ -86,8 +84,8 @@ impl Terminal {
     pub fn set(&mut self, x: i32, y: i32, c: char, fg: Color, bg: Color) {
         let cell = Cell {
             glyph: c,
-            fg: fg,
-            bg: bg,
+            fg,
+            bg,
             dirty: true,
         };
         self.set_cell(x, y, cell);

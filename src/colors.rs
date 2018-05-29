@@ -1,6 +1,4 @@
 
-use std::cmp::Eq;
-
 #[derive(Copy, Clone)]
 pub struct Color {
     pub r: u8,
@@ -10,7 +8,7 @@ pub struct Color {
 }
 
 impl Color {
-    pub fn RGB(r: u8, g: u8, b: u8) -> Color {
+    pub fn rgb(r: u8, g: u8, b: u8) -> Color {
         Color {
             r: r,
             g: g,
@@ -19,7 +17,7 @@ impl Color {
         }
     }
 
-    pub fn RGBA(r: u8, g: u8, b: u8, a: u8) -> Color {
+    pub fn rgba(r: u8, g: u8, b: u8, a: u8) -> Color {
         Color {
             r: r,
             g: g,
