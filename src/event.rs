@@ -1,6 +1,5 @@
 
 use sdl2;
-use sdl2::event::Event;
 use terminal::Terminal;
 
 pub struct Events {
@@ -10,6 +9,6 @@ pub struct Events {
 impl Events {
     pub fn new(terminal: &Terminal) -> Self {
         let event_pump = terminal.sdl_context.event_pump().unwrap();
-        Events { event_pump: event_pump }
+        Events { event_pump }
     }
 }

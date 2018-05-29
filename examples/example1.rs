@@ -12,9 +12,9 @@ use toffee::colors;
 
 pub fn main() {
     let font = FontDefinition {
-        image_path: "fonts/taffer.png",
-        width: 20,
-        height: 20,
+        image_path: "fonts/grim_10x12.png",
+        width: 10,
+        height: 12,
         padding: 0,
         transparent: false,
     };
