@@ -28,9 +28,6 @@ pub fn main() {
     let mut frames = 0;
     let mut fps = 0;
 
-    let mut x = 0;
-    let mut y = 0;
-
     'mainloop: loop {
 
         for event in event_handler.event_pump.poll_iter() {
