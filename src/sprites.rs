@@ -12,7 +12,10 @@ pub struct Sprite<'a> {
 impl<'a> Sprite<'a> {
     pub fn draw(&self, x: i32, y: i32, canvas: &mut Canvas<Window>) {
         let pos_rect = Rect::new(x, y, self.size.width(), self.size.height());
-        canvas.copy(&self.texture, Some(self.rect), Some(pos_rect));
+        match canvas.copy(&self.texture, Some(self.rect), Some(pos_rect)) {
+            Err(e) => println!("canvas copy error: {}", e),
+            _ => {}
+        }
     }
 }
 
