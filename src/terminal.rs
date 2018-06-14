@@ -38,8 +38,8 @@ pub struct Terminal {
 impl Terminal {
     pub fn new(columns: u32, rows: u32) -> Self {
 
-        let sdl_context = sdl2::init().unwrap();
-        let _image_context = sdl2::image::init(INIT_PNG).unwrap();
+        let sdl_context = sdl2::init().expect("failed to initialize sdl");
+        let _image_context = sdl2::image::init(INIT_PNG).expect("failed to initialize sdl image");
 
         let mut grid = vec![];
 
