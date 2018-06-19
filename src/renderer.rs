@@ -1,17 +1,36 @@
 
-use sdl2;
-use sdl2::pixels;
-use sdl2::rect::Rect;
-use sdl2::image::LoadTexture;
-use sdl2::video::{Window, WindowContext};
-use sdl2::render::TextureCreator;
+use gfx;
+use glutin;
+use glutin::{GlContext, GlRequest};
+use glutin::Api::OpenGl;
+use gfx_window_glutin as gfx_glutin;
 use std::path::Path;
-use terminal::Terminal;
+use terminal::{Cell, Terminal};
 use font::FontDefinition;
 use sprites::SpriteSheet;
 
+pub type ColorFormat = gfx::format::Srgba8;
+pub type DepthFormat = gfx::format::DepthStencil;
+
+gfx_defines!{
+    vertex Vertex {
+        pos: [f32; 4] = "a_Pos",
+        color: [f32; 3] = "a_Color",
+    }
+
+    constant Transform {
+        transform: [[f32; 4]; 4] = "u_Transform",
+    }
+
+    pipeline pipe {
+        vbuf: gfx::VertexBuffer<Vertex> = (),
+        transform: gfx::ConstantBuffer<Transform> = "Transform",
+        out: gfx::RenderTarget<ColorFormat> = "Target0",
+    }
+}
+
 pub struct Renderer {
-    sdl_canvas: sdl2::render::Canvas<Window>,
+    gl_window: GlWindow,
     sprite_sheet: SpriteSheet,
     texture_creator: TextureCreator<WindowContext>,
     font: FontDefinition,
@@ -19,24 +38,21 @@ pub struct Renderer {
 
 impl Renderer {
     pub fn new(terminal: &Terminal, font: FontDefinition) -> Self {
+        let events_loop = glutin::EventsLoop::new();
+        let window_builder = glutin::WindowBuilder::new()
+            .with_title("davokar-rl")
+            .with_dimensions(terminal.columns * font.width, terminal.rows * font.height);
+        let context_builder = glutin::ContextBuilder::new()
+            .with_gl(GlRequest::Specific(OpenGl, (3,2)))
+            .with_vsync(true);
 
-        let video_subsystem = terminal.sdl_context.video().unwrap();
-        let window = video_subsystem.window("davokar-rl",
-                    (terminal.columns * font.width) as u32,
-                    (terminal.rows * font.height) as u32)
-            .position_centered()
-            .build()
-            .unwrap();
-        let sdl_canvas = window.into_canvas()
-            .accelerated()
-            .build()
-            .unwrap();
-        let texture_creator = sdl_canvas.texture_creator();
+        let (window, mut device, mut factory, color_view, mut depth_view) = 
+            gfx_glutin::init::<ColorFormat, DepthFormat>(window_builder, context_builder, &events_loop);
 
         let sprite_sheet = Renderer::load_font_sheet(&font, &texture_creator).unwrap();
 
         Renderer {
-            sdl_canvas,
+            gl_window,
             sprite_sheet,
             texture_creator: texture_creator,
             font,
@@ -70,6 +86,15 @@ impl Renderer {
                 let px = x * self.font.width;
                 let py = y * self.font.height;
 
+                self.draw_cell(cell);
+
+                cell.dirty = false;
+            }
+        }
+        self.sdl_canvas.present();
+    }
+
+    fn draw_cell(&mut self, cell: &mut Cell) {
                 // draw the background for the cell
                 self.sdl_canvas
                     .set_draw_color(pixels::Color::RGBA(cell.bg.r,
@@ -84,9 +109,5 @@ impl Renderer {
 
                 // draw the actual character
                 sprite.draw(px as i32, py as i32, &mut self.sdl_canvas);
-                cell.dirty = false;
-            }
-        }
-        self.sdl_canvas.present();
     }
 }

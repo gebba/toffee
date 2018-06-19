@@ -3,7 +3,7 @@ name = "toffee"
 version = "0.2.0"
 authors = ["Johan Sjölin <johan.sjolin@gmail.com>"]
 
-[dependencies.sdl2]
-version = "0.31"
-default-features = false
-features = ["image", "unsafe_textures"]
+[dependencies]
+gfx = "0.17.1"
+glutin = "0.16.0"
+gfx_window_glutin = "0.24.0"

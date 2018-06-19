@@ -1,6 +1,4 @@
 
-use sdl2;
-use sdl2::image::INIT_PNG;
 use colors::Color;
 
 #[derive(Copy, Clone)]
@@ -28,46 +26,46 @@ impl PartialEq for Cell {
     }
 }
 
+impl Default for Cell {
+    fn default() -> Cell {
+        Cell {
+            glyph: ' ',
+            fg: Color {
+                r: 255,
+                g: 255,
+                b: 255,
+                a: 255,
+            },
+            bg: Color {
+                r: 0,
+                g: 0,
+                b: 0,
+                a: 255,
+            },
+            dirty: true
+        }
+    }
+}
+
 pub struct Terminal {
     pub grid: Vec<Cell>,
     pub columns: u32,
     pub rows: u32,
-    pub sdl_context: sdl2::Sdl,
 }
 
 impl Terminal {
     pub fn new(columns: u32, rows: u32) -> Self {
-
-        let sdl_context = sdl2::init().expect("failed to initialize sdl");
-        let _image_context = sdl2::image::init(INIT_PNG).expect("failed to initialize sdl image");
-
         let mut grid = vec![];
 
         let total_cells = columns * rows;
         for _ in 0..total_cells {
-            grid.push(Cell {
-                glyph: ' ',
-                fg: Color {
-                    r: 255,
-                    g: 255,
-                    b: 255,
-                    a: 255,
-                },
-                bg: Color {
-                    r: 0,
-                    g: 0,
-                    b: 0,
-                    a: 255,
-                },
-                dirty: true,
-            });
+            grid.push(Default::default());
         }
 
         Terminal {
             grid,
             columns,
             rows,
-            sdl_context,
         }
     }
 
