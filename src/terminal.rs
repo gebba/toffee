@@ -1,6 +1,6 @@
 
 use sdl2;
-use sdl2::image::INIT_PNG;
+use sdl2::image::InitFlag;
 use colors::Color;
 
 #[derive(Copy, Clone)]
@@ -39,7 +39,7 @@ impl Terminal {
     pub fn new(columns: u32, rows: u32) -> Self {
 
         let sdl_context = sdl2::init().expect("failed to initialize sdl");
-        let _image_context = sdl2::image::init(INIT_PNG).expect("failed to initialize sdl image");
+        let _image_context = sdl2::image::init(InitFlag::PNG).expect("failed to initialize sdl image");
 
         let mut grid = vec![];
 
