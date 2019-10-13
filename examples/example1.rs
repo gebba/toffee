@@ -19,7 +19,7 @@ pub fn main() {
         transparent: false,
     };
     let mut term = Terminal::new(50, 20);
-    let mut term_renderer = Renderer::new(&term, font);
+    let mut term_renderer = Renderer::new(&term, font, false);
     let mut event_handler = Events::new(&term);
 
     term.print_center(5, "It seems to be working!", colors::WHITE, colors::BLUE);
