@@ -58,6 +58,9 @@ impl Renderer {
     pub fn draw(&mut self, terminal: &mut Terminal) {
         let total_cells = terminal.columns * terminal.rows;
 
+        if !self.dirty_optimization {
+            self.sdl_canvas.clear();
+        }
         for i in 0..total_cells {
             self.draw_cell(i, terminal);
         }
