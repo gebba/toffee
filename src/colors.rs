@@ -1,4 +1,3 @@
-
 #[derive(Copy, Clone)]
 pub struct Color {
     pub r: u8,
@@ -29,7 +28,7 @@ impl Color {
 
 impl PartialEq for Color {
     fn eq(&self, other: &Color) -> bool {
-        (self.r == other.r && self.g == other.g && self.b == other.b && self.a == other.a)
+        self.r == other.r && self.g == other.g && self.b == other.b && self.a == other.a
     }
 }
 

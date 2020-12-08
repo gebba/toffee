@@ -1,7 +1,5 @@
-
-use sdl2::rect::Rect;
-use sdl2::video::Window;
-use sdl2::render::{Texture, Canvas};
+use glutin_window::GlutinWindow;
+use piston_window::{PistonWindow, Texture};
 
 pub struct Sprite<'a> {
     rect: Rect,
@@ -10,8 +8,17 @@ pub struct Sprite<'a> {
 }
 
 impl<'a> Sprite<'a> {
-    pub fn draw(&self, x: i32, y: i32, canvas: &mut Canvas<Window>) {
+    pub fn draw(&self, x: i32, y: i32, window: &PistonWindow) {
         let pos_rect = Rect::new(x, y, self.size.width(), self.size.height());
+
+        match window.next() {
+            Some(e) => {window.draw_2d(&e, |c, g, _| {
+                clear([1.0; 4], g);
+                image(&self.texture, c.transform, g);
+            }},
+            None => _
+        }
+
         match canvas.copy(&self.texture, Some(self.rect), Some(pos_rect)) {
             Err(e) => println!("canvas copy error: {}", e),
             _ => {}

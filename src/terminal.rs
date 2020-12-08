@@ -1,7 +1,5 @@
-
-use sdl2;
-use sdl2::image::InitFlag;
 use colors::Color;
+use render::Renderer;
 
 #[derive(Copy, Clone)]
 pub struct Cell {
@@ -24,23 +22,19 @@ impl Cell {
 
 impl PartialEq for Cell {
     fn eq(&self, other: &Cell) -> bool {
-        (self.glyph == other.glyph && self.fg == other.fg && self.bg == other.bg)
+        self.glyph == other.glyph && self.fg == other.fg && self.bg == other.bg
     }
 }
 
-pub struct Terminal {
+pub struct Terminal<'a> {
     pub grid: Vec<Cell>,
     pub columns: u32,
     pub rows: u32,
-    pub sdl_context: sdl2::Sdl,
+    pub renderer: Box<dyn Renderer + 'a>,
 }
 
-impl Terminal {
-    pub fn new(columns: u32, rows: u32) -> Self {
-
-        let sdl_context = sdl2::init().expect("failed to initialize sdl");
-        let _image_context = sdl2::image::init(InitFlag::PNG).expect("failed to initialize sdl image");
-
+impl<'a> Terminal<'a> {
+    pub fn new(renderer: Box<dyn Renderer + 'a>, columns: u32, rows: u32) -> Self {
         let mut grid = vec![];
 
         let total_cells = columns * rows;
@@ -67,7 +61,27 @@ impl Terminal {
             grid,
             columns,
             rows,
-            sdl_context,
+            renderer,
+        }
+    }
+
+    pub fn string_for_row(&self, row_index: u32) -> String {
+        let mut result = String::new();
+        for column_index in 0..self.columns {
+            match self.get_cell(column_index as i32, row_index as i32) {
+                Some(cell) => result.push(cell.glyph),
+                None => {}
+            }
+        }
+        result
+    }
+
+    pub fn get_cell(&self, x: i32, y: i32) -> Option<&Cell> {
+        let index = self.columns as i32 * y + x;
+        if x >= 0 && y >= 0 && x < self.columns as i32 && y < self.rows as i32 {
+            Some(&self.grid[index as usize])
+        } else {
+            None
         }
     }
 
@@ -104,5 +118,9 @@ impl Terminal {
         let str_len_mid = text.len() / 2;
         let target_x = center_x - str_len_mid as u32;
         self.print(target_x as i32, y, text, fg, bg);
+    }
+
+    pub fn render(&self) {
+        self.renderer.render(self);
     }
 }
