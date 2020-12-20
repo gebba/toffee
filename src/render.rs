@@ -1,3 +1,7 @@
+mod wgpu;
+
+pub use render::wgpu::WgpuRenderer;
+
 use terminal::Terminal;
 
 pub trait Renderer {
